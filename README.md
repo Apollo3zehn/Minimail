@@ -6,4 +6,6 @@ The purpose of this project is to reduce spam mails by self-hosting a mail serve
 
 Minimail is a very simple mail server based on the [SmtpServer](https://github.com/cosullivan/SmtpServer) library with Maildir support (e.g. for [Dovecot imap server](https://www.dovecot.org/)).
 
+The current version assumes that the web server is running under the subdirectory /minimail, e.g. `http://mydomain:8080/minimail`.
+
 

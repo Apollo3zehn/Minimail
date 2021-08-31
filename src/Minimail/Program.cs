@@ -75,8 +75,20 @@ namespace Minimail
             serviceProvider.Add(new MiniMessageStore(pathsOptions, logger));
 
             var smtpServer = new SmtpServer.SmtpServer(smtpOptions, serviceProvider);
-            _ = smtpServer.StartAsync(CancellationToken.None);
 
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await smtpServer.StartAsync(CancellationToken.None);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "Unable to start smtp server.");
+                    Environment.Exit(-1);
+                }
+            });
+            
             // blazor
             Program.CreateHostBuilder(args, configuration).Build().Run();
         }

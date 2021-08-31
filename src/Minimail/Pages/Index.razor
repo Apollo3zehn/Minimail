@@ -1,0 +1,34 @@
+@page "/"
+
+<h1>Minimail</h1>
+
+<input type="text" @bind-value="@newAddress">
+<button class="btn btn-primary" @onclick="Add">Add</button>
+
+<h1>Addresses</h1>
+
+@foreach (var (mailaddress, _) in Program._whitelist)
+{
+    <div>
+        <span>@mailaddress</span>
+        <span class="oi oi-trash" title="Delete" aria-hidden="true" @onclick="() => Delete(mailaddress)"></span>
+    </div>
+}
+
+@code {
+    private string newAddress;
+
+    private void Add()
+    {
+        if (!string.IsNullOrWhiteSpace(newAddress))
+            Program._whitelist.TryAdd(newAddress, null);
+
+        Save();
+    }
+
+    private void Delete(string mailAddress)
+    {
+        Program._whitelist.TryRemove(mailAddress, out _);
+        Save();
+    }
+}

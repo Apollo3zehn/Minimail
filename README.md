@@ -1,4 +1,4 @@
-# Nexus
+# Minimail
 
 [![AppVeyor](https://ci.appveyor.com/api/projects/status/github/apollo3zehn/minimail?svg=true&branch=master)](https://ci.appveyor.com/project/Apollo3zehn/Minimail)
 

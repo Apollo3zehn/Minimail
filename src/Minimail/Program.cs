@@ -7,9 +7,7 @@ using SmtpServer;
 using SmtpServer.ComponentModel;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 using System.Threading;
@@ -17,6 +15,12 @@ using System.Threading.Tasks;
 
 namespace Minimail
 {
+    // https://www.checktls.com/TestReceiver
+    // https://dnschecker.org/#A/m1.apollo3zehn.net
+    // https://www.psw-group.de/blog/mta-sts-gestaltet-mail-versand-und-empfang-sicherer/7080
+    // https://www.stevenrombauts.be/2018/12/test-smtp-with-telnet-or-openssl/
+    // https://github.com/cosullivan/SmtpServer/blob/master/Examples/SampleApp/Examples/CommonPortsExample.cs
+
     public class Program
     {
         public static ConcurrentDictionary<string, object> _whitelist;
@@ -63,7 +67,7 @@ namespace Minimail
                .Endpoint(builder => builder.Port(25).IsSecure(false))
                .Endpoint(builder =>
                    builder
-                        .Port(587, isSecure: true)
+                        .Port(587)
                         .AllowUnsecureAuthentication(false)
                         .Certificate(X509Certificate2.CreateFromPemFile(pathsOptions.CertFullChain, pathsOptions.CertPrivateKey)))
                .Build();

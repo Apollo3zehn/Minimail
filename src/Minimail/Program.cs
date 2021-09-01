@@ -20,6 +20,7 @@ namespace Minimail
     // https://www.psw-group.de/blog/mta-sts-gestaltet-mail-versand-und-empfang-sicherer/7080
     // https://www.stevenrombauts.be/2018/12/test-smtp-with-telnet-or-openssl/
     // https://github.com/cosullivan/SmtpServer/blob/master/Examples/SampleApp/Examples/CommonPortsExample.cs
+    // https://de.wikipedia.org/wiki/STARTTLS
 
     public class Program
     {
@@ -64,10 +65,18 @@ namespace Minimail
             // smtp server
             var smtpOptions = new SmtpServerOptionsBuilder()
                .ServerName(generalOptions.Domain)
-               .Endpoint(builder => builder.Port(25).IsSecure(false))
+
+               // Provider to Provider transfer
+               .Endpoint(builder =>
+                   builder
+                        .Port(25)
+                        .Certificate(X509Certificate2.CreateFromPemFile(pathsOptions.CertFullChain, pathsOptions.CertPrivateKey)))
+
+               // Send mails
                .Endpoint(builder =>
                    builder
                         .Port(587)
+                        .AuthenticationRequired(true)
                         .AllowUnsecureAuthentication(false)
                         .Certificate(X509Certificate2.CreateFromPemFile(pathsOptions.CertFullChain, pathsOptions.CertPrivateKey)))
                .Build();

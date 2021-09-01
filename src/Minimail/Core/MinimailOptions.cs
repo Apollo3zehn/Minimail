@@ -41,7 +41,9 @@ namespace Minimail.Core
 
         public string Maildir { get; set; } = Path.Combine(PathsOptions.DefaultRootPath, "Maildir");
 
-        public string Certificate { get; set; } = Path.Combine(PathsOptions.DefaultRootPath, "certificate.pem");
+        public string CertFullChain { get; set; } = Path.Combine(PathsOptions.DefaultRootPath, "fullchain.pem");
+
+        public string CertPrivateKey { get; set; } = Path.Combine(PathsOptions.DefaultRootPath, "privkey.pem");
 
         public string Whitelist { get; set; } = Path.Combine(PathsOptions.DefaultRootPath, "whitelist.json");
 

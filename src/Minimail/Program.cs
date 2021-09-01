@@ -65,9 +65,9 @@ namespace Minimail
                .Endpoint(builder => builder.Port(25).IsSecure(false))
                .Endpoint(builder =>
                    builder
-                        .Port(587, true)
+                        .Port(587, isSecure: true)
                         .AllowUnsecureAuthentication(false)
-                        .Certificate(CreateCertificate()))
+                        .Certificate(X509Certificate2.CreateFromPemFile(pathsOptions.CertFullChain, pathsOptions.CertPrivateKey)))
                .Build();
 
             var serviceProvider = new ServiceProvider();
@@ -102,10 +102,5 @@ namespace Minimail
                     webBuilder.UseConfiguration(configuration);
                     webBuilder.UseUrls("http://0.0.0.0:8080");
                 });
-
-        static X509Certificate2 CreateCertificate()
-        {
-            return new X509Certificate2();
-        }
     }
 }

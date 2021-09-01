@@ -7,6 +7,7 @@ using SmtpServer;
 using SmtpServer.ComponentModel;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
@@ -49,10 +50,7 @@ namespace Minimail
             if (File.Exists(pathsOptions.Whitelist))
             {
                 var jsonString = File.ReadAllText(pathsOptions.Whitelist);
-                var content = JsonSerializer.Deserialize<string[]>(jsonString);
-
-                _whitelist = new ConcurrentDictionary<string, object>(
-                    content.ToDictionary(key => key, value => (object)null));
+                _whitelist = JsonSerializer.Deserialize<ConcurrentDictionary<string, object>>(jsonString);
             }
             else
             {

@@ -81,7 +81,7 @@ namespace Minimail
                         .Certificate(X509Certificate2.CreateFromPemFile(pathsOptions.CertFullChain, pathsOptions.CertPrivateKey)))
                .Build();
 
-            var serviceProvider = new ServiceProvider();
+            var serviceProvider = new SmtpServer.ComponentModel.ServiceProvider();
             serviceProvider.Add(new MiniMailboxFilter(_whitelist, logger));
             serviceProvider.Add(new MiniMessageStore(pathsOptions, logger));
 

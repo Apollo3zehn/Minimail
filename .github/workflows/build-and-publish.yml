@@ -43,7 +43,7 @@ jobs:
         uses: docker/setup-buildx-action@v1
 
       - name: Build
-        run: |
+        run: dotnet publish -c release -o app /p:Version=${{ env.VERSION }} src/Minimail/Minimail.csproj
 
       - name: Docker Build
         run: |

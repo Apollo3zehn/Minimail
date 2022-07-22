@@ -1,6 +1,6 @@
 # Minimail
 
-[![AppVeyor](https://ci.appveyor.com/api/projects/status/github/apollo3zehn/minimail?svg=true&branch=master)](https://ci.appveyor.com/project/Apollo3zehn/Minimail)
+[![GitHub Actions](https://github.com/Apollo3zehn/Minimail/actions/workflows/build-and-publish.yml/badge.svg)](https://github.com/Apollo3zehn/Minimail/actions)
 
 The purpose of this project is to reduce spam mails by self-hosting a mail server and creating a new mail address for each web service (receive-only, no outgoing mails!). As soon as the address receives spam, it can be removed from the list of addresses using the web interface (port 8080).
 

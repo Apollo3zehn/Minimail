@@ -26,7 +26,7 @@ namespace Minimail
     {
         public static ConcurrentDictionary<string, object> _whitelist;
 
-        public static async Task Main(string[] args)
+        public static void Main(string[] args)
         {
             Console.WriteLine("Welcome to Minimail");
 

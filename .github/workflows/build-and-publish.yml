@@ -47,7 +47,7 @@ jobs:
 
       - name: Docker Build
         run: |
-          docker build -t ghcr.io/apollo3zehn/minimail:${{ env.VERSION }} .
+          docker build --platform linux/arm64 -t ghcr.io/apollo3zehn/minimail:${{ env.VERSION }} .
           docker save --output artifacts/images/minimail_image.tar ghcr.io/apollo3zehn/minimail:${{ env.VERSION }}
 
       - name: Upload Artifacts

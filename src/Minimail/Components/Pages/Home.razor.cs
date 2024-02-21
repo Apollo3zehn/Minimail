@@ -15,6 +15,12 @@ public partial class Home
         var options = new JsonSerializerOptions() { WriteIndented = true };
         var jsonString = JsonSerializer.Serialize(State.Whitelist, options);
 
+        var directoryName = Path.GetDirectoryName(PathsOptions.Value.Whitelist);
+
+        if (directoryName is not null) {
+            Directory.CreateDirectory(directoryName);
+        }
+
         File.WriteAllText(PathsOptions.Value.Whitelist, jsonString);
     }
 }

@@ -9,6 +9,7 @@ namespace Minimail
     class MiniMailboxFilter : IMailboxFilter
     {
         private ConcurrentDictionary<string, object?> _whitelist;
+        
         private ILogger _logger;
 
         public MiniMailboxFilter(ConcurrentDictionary<string, object?> whitelist, ILogger logger)
@@ -26,7 +27,7 @@ namespace Minimail
         {
             try
             {
-                var toAddress = to.AsAddress();
+                var toAddress = to.AsAddress().Replace("@m1.apollo3zehn.net", "");
 
                 if (_whitelist.ContainsKey(toAddress))
                 {

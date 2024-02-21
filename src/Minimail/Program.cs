@@ -4,6 +4,7 @@ using System.Text.Json;
 using Minimail;
 using Minimail.Components;
 using Minimail.Core;
+using MudBlazor;
 using MudBlazor.Services;
 using SmtpServer;
 
@@ -26,7 +27,11 @@ builder.Services.Configure<GeneralOptions>(
 builder.Services.Configure<PathsOptions>(
     builder.Configuration.GetSection(PathsOptions.Section));
 
-builder.Services.AddMudServices();
+builder.Services.AddMudServices(config =>
+{
+    config.SnackbarConfiguration.VisibleStateDuration = 4000;
+    config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomCenter;
+});
 
 var app = builder.Build();
 
@@ -86,41 +91,41 @@ void RunSmtpServer()
         State.Whitelist = new();
     }
 
-    // // smtp server
-    // var smtpOptions = new SmtpServerOptionsBuilder()
-    //     .ServerName(generalOptions.Domain)
+    // smtp server
+    var smtpOptions = new SmtpServerOptionsBuilder()
+        .ServerName(generalOptions.Domain)
 
-    //     // Provider to Provider transfer
-    //     .Endpoint(builder =>
-    //         builder
-    //             .Port(25)
-    //             .Certificate(X509Certificate2.CreateFromPemFile(pathsOptions.CertFullChain, pathsOptions.CertPrivateKey)))
+        // Provider to Provider transfer
+        .Endpoint(builder =>
+            builder
+                .Port(25)
+                .Certificate(X509Certificate2.CreateFromPemFile(pathsOptions.CertFullChain, pathsOptions.CertPrivateKey)))
 
-    //     // Send mails
-    //     .Endpoint(builder =>
-    //         builder
-    //             .Port(587)
-    //             .AuthenticationRequired(true)
-    //             .AllowUnsecureAuthentication(false)
-    //             .Certificate(X509Certificate2.CreateFromPemFile(pathsOptions.CertFullChain, pathsOptions.CertPrivateKey)))
-    //     .Build();
+        // Send mails
+        .Endpoint(builder =>
+            builder
+                .Port(587)
+                .AuthenticationRequired(true)
+                .AllowUnsecureAuthentication(false)
+                .Certificate(X509Certificate2.CreateFromPemFile(pathsOptions.CertFullChain, pathsOptions.CertPrivateKey)))
+        .Build();
 
-    // var serviceProvider = new SmtpServer.ComponentModel.ServiceProvider();
-    // serviceProvider.Add(new MiniMailboxFilter(State.Whitelist, logger));
-    // serviceProvider.Add(new MiniMessageStore(pathsOptions, logger));
+    var serviceProvider = new SmtpServer.ComponentModel.ServiceProvider();
+    serviceProvider.Add(new MiniMailboxFilter(State.Whitelist, logger));
+    serviceProvider.Add(new MiniMessageStore(pathsOptions, logger));
 
-    // var smtpServer = new SmtpServer.SmtpServer(smtpOptions, serviceProvider);
+    var smtpServer = new SmtpServer.SmtpServer(smtpOptions, serviceProvider);
 
-    // _ = Task.Run(async () =>
-    // {
-    //     try
-    //     {
-    //         await smtpServer.StartAsync(CancellationToken.None);
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         logger.LogError(ex, "Unable to start smtp server.");
-    //         Environment.Exit(-1);
-    //     }
-    // });
+    _ = Task.Run(async () =>
+    {
+        try
+        {
+            await smtpServer.StartAsync(CancellationToken.None);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Unable to start smtp server.");
+            Environment.Exit(-1);
+        }
+    });
 }

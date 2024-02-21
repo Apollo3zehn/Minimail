@@ -1,68 +1,130 @@
 ﻿@page "/"
-@rendermode InteractiveServer
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Minimail</PageTitle>
 
 <div class="w-full flex flex-col items-center gap-5">
 
-    <MudText 
-        Typo="Typo.h2"
-        Class="pt-12">
-        Minimail
-    </MudText>
-
-    <MudPaper Class="pa-16 w-96" Elevation="5"> 
-
-        <div class="flex flex-row gap-4 items-end">
-            <MudTextField 
-                @bind-Value="_newAddress" 
-                Label="Standard" 
-                Variant="Variant.Text">
-            </MudTextField>
-
-            <MudButton 
-                Variant="Variant.Outlined"
-                Color="Color.Primary"
-                OnClick="Add">
-                Add
-            </MudButton>
+    <div class="flex flex-row gap-3 items-end mt-12">
+        <div>
+            <MudImage Width="40" Height="40" Src="favicon.png"></MudImage>
         </div>
-
-    </MudPaper>
-
-    <MudPaper Class="pa-16 w-96" Elevation="5">
-
         <MudText 
-            Typo="Typo.h5">
-            Addresses
+            Typo="Typo.h4">
+            Minimail
         </MudText>
+    </div>
 
-        @foreach (var (mailaddress, _) in State.Whitelist)
-        {
-            <div>
-                <span>@mailaddress</span>
-                <span class="oi oi-trash" title="Delete" aria-hidden="true" @onclick="() => Delete(mailaddress)"></span>
+    <div class="flex flex-col gap-5">
+
+        <MudPaper Class="pa-8 w-full" Elevation="5"> 
+
+            <div class="flex flex-row gap-4 items-end">
+                <MudTextField 
+                    @bind-Value="_newAddress"
+                    @bind-Value:after="OnEmailAddressChanged"
+                    Immediate="true"
+                    Label="E-Mail"
+                    HelperText="@("@apollo3zehn.net")"
+                    Variant="Variant.Text">
+                </MudTextField>
+
+                <MudButton 
+                    Variant="Variant.Outlined"
+                    Color="Color.Primary"
+                    Disabled="_disabled"
+                    OnClick="AddAsync">
+                    Add
+                </MudButton>
             </div>
-        }
 
-    </MudPaper>
+        </MudPaper>
 
-    @code {
-        private string? _newAddress;
+        <MudPaper Class="pa-8 w-full" Elevation="5">
 
-        private void Add()
+            <MudText 
+                Typo="Typo.h5"
+                Class="pl-2">
+                Addresses
+            </MudText>
+
+            <div class="flex flex-col gap-2 my-3">
+                @foreach (var (mailaddress, _) in State.Whitelist.OrderBy(entry => entry.Key))
+                {
+                    <div 
+                        class="
+                            flex flex-row p-2 justify-between hover:bg-cyan-900 
+                            rounded cursor-pointer hover:text-white"
+                        @onclick="() => SelectEmailAddressAndShowDialogAsync(mailaddress!)">
+                        <div>
+                            <MudIcon
+                                Icon="@Icons.Material.Outlined.Mail" />
+                            <span>@mailaddress</span>
+                        </div>
+                    </div>
+                }
+            </div>
+
+        </MudPaper>
+
+    </div>
+
+</div>
+
+@code {
+
+    private bool _disabled = true;
+
+    private string? _newAddress;
+
+    private async Task SelectEmailAddressAndShowDialogAsync(string emailAddress)
+    {
+        var messageBoxOptions = new MessageBoxOptions()
         {
-            Console.WriteLine("yo?");
+            Title = "Confirm delete",
+            Message = $"Do you want do delete address {emailAddress}@m1.apollo3zehn.net?",
+            YesText = "Yes",
+            CancelText = "Cancel"
+        };
 
-            if (!string.IsNullOrWhiteSpace(_newAddress))
-                State.Whitelist.TryAdd(_newAddress, default);
+        var result = await DialogService.ShowMessageBox(messageBoxOptions, default);
 
-            Save();
-        }
-
-        private void Delete(string mailAddress)
+        if (result.HasValue && result.Value)
         {
-            State.Whitelist.TryRemove(mailAddress, out _);
-            Save();
+            Delete(emailAddress);
         }
     }
 
-</div>
+    private void OnEmailAddressChanged()
+    {
+        _disabled =
+            string.IsNullOrWhiteSpace(_newAddress) ||
+            State.Whitelist.TryGetValue(_newAddress, out _);
+    }
+
+    private async Task AddAsync()
+    {
+        if (!string.IsNullOrWhiteSpace(_newAddress))
+            State.Whitelist.TryAdd(_newAddress, default);
+
+        Save();
+
+        await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", $"{_newAddress}@m1.apollo3zehn.net");
+
+        Snackbar.Add(
+            $"The e-mail address {_newAddress}@m1.apollo3zehn.net has been added and copied to clipboard.", 
+            Severity.Success);
+
+        _newAddress = default;
+    }
+
+    private void Delete(string mailAddress)
+    {
+        State.Whitelist.TryRemove(mailAddress, out _);
+        Save();
+
+        Snackbar.Add($"The e-mail address {_newAddress}@m1.apollo3zehn.net has been deleted.", Severity.Info);
+    }
+}

@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MudBlazor" Version="6.16.0" />
     <PackageReference Include="SmtpServer" Version="9.0.1" />
   </ItemGroup>
 

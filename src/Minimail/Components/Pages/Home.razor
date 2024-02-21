@@ -1,0 +1,68 @@
+﻿@page "/"
+@rendermode InteractiveServer
+
+<div class="w-full flex flex-col items-center gap-5">
+
+    <MudText 
+        Typo="Typo.h2"
+        Class="pt-12">
+        Minimail
+    </MudText>
+
+    <MudPaper Class="pa-16 w-96" Elevation="5"> 
+
+        <div class="flex flex-row gap-4 items-end">
+            <MudTextField 
+                @bind-Value="_newAddress" 
+                Label="Standard" 
+                Variant="Variant.Text">
+            </MudTextField>
+
+            <MudButton 
+                Variant="Variant.Outlined"
+                Color="Color.Primary"
+                OnClick="Add">
+                Add
+            </MudButton>
+        </div>
+
+    </MudPaper>
+
+    <MudPaper Class="pa-16 w-96" Elevation="5">
+
+        <MudText 
+            Typo="Typo.h5">
+            Addresses
+        </MudText>
+
+        @foreach (var (mailaddress, _) in State.Whitelist)
+        {
+            <div>
+                <span>@mailaddress</span>
+                <span class="oi oi-trash" title="Delete" aria-hidden="true" @onclick="() => Delete(mailaddress)"></span>
+            </div>
+        }
+
+    </MudPaper>
+
+    @code {
+        private string? _newAddress;
+
+        private void Add()
+        {
+            Console.WriteLine("yo?");
+
+            if (!string.IsNullOrWhiteSpace(_newAddress))
+                State.Whitelist.TryAdd(_newAddress, default);
+
+            Save();
+        }
+
+        private void Delete(string mailAddress)
+        {
+            State.Whitelist.TryRemove(mailAddress, out _);
+            Save();
+        }
+    }
+
+</div>

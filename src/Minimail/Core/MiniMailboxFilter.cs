@@ -1,21 +1,17 @@
-﻿using Microsoft.Extensions.Logging;
-using SmtpServer;
+﻿using SmtpServer;
 using SmtpServer.Mail;
 using SmtpServer.Storage;
-using System;
 using System.Collections.Concurrent;
-using System.Threading;
-using System.Threading.Tasks;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Minimail
 {
     class MiniMailboxFilter : IMailboxFilter
     {
-        private ConcurrentDictionary<string, object> _whitelist;
+        private ConcurrentDictionary<string, object?> _whitelist;
         private ILogger _logger;
 
-        public MiniMailboxFilter(ConcurrentDictionary<string, object> whitelist, ILogger logger)
+        public MiniMailboxFilter(ConcurrentDictionary<string, object?> whitelist, ILogger logger)
         {
             _whitelist = whitelist;
             _logger = logger;

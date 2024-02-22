@@ -104,23 +104,20 @@
             State.Whitelist.TryGetValue(_newAddress, out _);
     }
 
-    private Task AddAsync()
+    private async Task AddAsync()
     {
         if (!string.IsNullOrWhiteSpace(_newAddress))
             State.Whitelist.TryAdd(_newAddress, default);
 
         Save();
 
-        // disabled due to: https://stackoverflow.com/questions/51805395/navigator-clipboard-is-undefined
-        // await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", $"{_newAddress}@m1.apollo3zehn.net");
+        await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", $"{_newAddress}@m1.apollo3zehn.net");
 
         Snackbar.Add(
             $"The e-mail address {_newAddress}@m1.apollo3zehn.net has been added and copied to clipboard.", 
             Severity.Success);
 
         _newAddress = default;
-
-        return Task.CompletedTask;
     }
 
     private void Delete(string mailAddress)

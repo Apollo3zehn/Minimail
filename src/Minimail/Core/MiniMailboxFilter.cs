@@ -27,9 +27,10 @@ namespace Minimail
         {
             try
             {
-                var toAddress = to.AsAddress().Replace("@m1.apollo3zehn.net", "");
+                var toAddress = to.AsAddress();
+                var toAddressWithoutDomain = toAddress.Replace("@m1.apollo3zehn.net", "");
 
-                if (_whitelist.ContainsKey(toAddress))
+                if (_whitelist.ContainsKey(toAddressWithoutDomain))
                 {
                     _logger.LogInformation("Accept to deliver mail from {From} to {To}.", from.AsAddress(), toAddress);
                     return Task.FromResult(MailboxFilterResult.Yes);

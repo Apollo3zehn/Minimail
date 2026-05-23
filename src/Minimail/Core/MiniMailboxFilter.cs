@@ -28,7 +28,7 @@ namespace Minimail
             try
             {
                 var toAddress = to.AsAddress();
-                var toAddressWithoutDomain = toAddress.Replace("@m1.apollo3zehn.net", "");
+                var toAddressWithoutDomain = toAddress.Replace("@m1.apollo3zehn.net", "").ToLower();
 
                 if (_whitelist.ContainsKey(toAddressWithoutDomain))
                 {
